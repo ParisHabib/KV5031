@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QInputDialog, QApplication, QListView, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QMessageBox, QLineEdit, QPushButton
+from PySide6.QtWidgets import QToolBar, QStatusBar, QMenuBar, QTextEdit, QInputDialog, QApplication, QListView, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QMessageBox, QLineEdit, QPushButton
+from PySide6.QtGui import QAction
 from licensee import Licensee
 
 #Main Application Widget
@@ -7,6 +8,25 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("RHU") #Setting window title
         self.resize(400, 300) #Setting window size
+
+        self.setStatusBar(QStatusBar(self)) #create status bar
+        self.statusBar().showMessage("Ready")
+        menubar = self.menuBar() #create menus bar and add a file menu and licensee menu
+        file_menu = menubar.addMenu("File")
+        licensees_menu = menubar.addMenu("Licensees")
+        menubar.setNativeMenuBar(False) #found this on a forum because im on mac and menubar was appearing at the top and was confusing me
+
+        add_action = QAction("Add", self) #add actions to file menu
+        add_action.triggered.connect(self.add_licensee)
+        licensees_menu.addAction(add_action)
+
+        delete_action = QAction("Delete", self)
+        delete_action.triggered.connect(self.delete_licensee)
+        licensees_menu.addAction(delete_action)
+
+        exit_action = QAction("Exit", self)
+        exit_action.triggered.connect(self.close)
+        file_menu.addAction(exit_action)
 
         self.list_widget = QListWidget() #Create QListView
         #self.name_input = QLineEdit()
@@ -47,7 +67,7 @@ class MainWindow(QMainWindow):
         )
         if ok and value != "":
             self.licensees.append(Licensee(value))
-            self.list_widget.addItems([value])
+            self.list_widget.addItem(value)
 
     def delete_licensee(self):
         hitItems = self.list_widget.selectedItems()
