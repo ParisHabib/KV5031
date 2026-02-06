@@ -84,6 +84,18 @@ class MainWindow(QMainWindow):
                     licensee_select.set_sex_offender(True)
                 else:
                     licensee_select.set_sex_offender(False)
+                
+                reply2 = QMessageBox.question(
+                    self,
+                    "Drug Search",
+                    "Does he/she require a drug search?",
+                    QMessageBox.StandardButton.Yes |
+                    QMessageBox.StandardButton.No
+                )
+                if reply2 == QMessageBox.StandardButton.Yes:
+                    licensee_select.set_needed_drug_search(True)
+                else:
+                    licensee_select.set_needed_drug_search(False)
                 self.licensees.append(licensee_select)
                 self.list_widget.addItem(licensee_select.get_name())
                 
@@ -107,4 +119,4 @@ class MainWindow(QMainWindow):
         row = self.list_widget.row(item)
         licensee_select = self.licensees[row]
         QMessageBox.information(self, "Selected", 
-                                f"Name: {licensee_select.get_name()} \nID: {licensee_select.get_id()} \nSex Offender: {licensee_select.get_sex_offender()}")
+                                f"Name: {licensee_select.get_name()} \nID: {licensee_select.get_id()} \nSex Offender: {licensee_select.get_sex_offender()} \nDrug Search Needed: {licensee_select.get_needed_drug_search()}")

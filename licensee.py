@@ -16,12 +16,23 @@ class Licensee(Person):
     def __init__(self, name: str, personal_id: str = "000"):
         super().__init__(name, personal_id)
         self.sex_offender = False
+        self.needed_drug_search = False
 
     def get_sex_offender(self) -> bool:
         return self.sex_offender
     
     def set_sex_offender(self, status: bool) -> None:
         self.sex_offender = status
+
+    def get_needed_drug_search(self) -> bool:
+        return self.needed_drug_search
+    
+    def set_needed_drug_search(self, status: bool) -> None:
+        self.needed_drug_search = status
+
+class Officer(Person):
+    def __init__(self, name: str, personal_id: str ="000"):
+        super().__init__(name, personal_id)
 
 #class Licensee:
     #def __init__(self, name: str, licensee_id: str) -> None:
