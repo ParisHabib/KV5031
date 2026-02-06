@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.delete_button = QPushButton("Delete")
 
         self.add_button.clicked.connect(self.add_licensee)
-        self.list_widget.itemClicked.connect(self.on_item_clicked)
+        self.list_widget.itemDoubleClicked.connect(self.on_item_double_clicked)
         self.delete_button.clicked.connect(self.delete_licensee)
 
         input_layout = QHBoxLayout()
@@ -51,23 +51,43 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(container)
 
         self.licensees = [
-            Licensee("Test 1"),
-            Licensee("Test 2"),
-            Licensee("Test 3")
+            Licensee("Test 1", "001"),
+            Licensee("Test 2", "002"),
+            Licensee("Test 3", "003")
         ]
 
         for lic in self.licensees: #puts data into UI list
             self.list_widget.addItem(lic.get_name())
 
     def add_licensee(self):
-        value, ok = QInputDialog.getText(
+        name, ok = QInputDialog.getText(
             self,
             "Add Licensee",
             "Enter name"
         )
-        if ok and value != "":
-            self.licensees.append(Licensee(value))
-            self.list_widget.addItem(value)
+        if ok and name != "":
+            personal_id, ok2 = QInputDialog.getText(
+                self,
+                "Add Licensee",
+                "Enter ID"
+            )
+            if ok2 and personal_id != "":
+                licensee_select = Licensee(name, personal_id)
+                reply = QMessageBox.question(
+                    self,
+                    "Sex Offender",
+                    "Is he/she a sex offender?",
+                    QMessageBox.StandardButton.Yes |
+                    QMessageBox.StandardButton.No
+                )
+                if reply == QMessageBox.StandardButton.Yes:
+                    licensee_select.set_sex_offender(True)
+                else:
+                    licensee_select.set_sex_offender(False)
+                self.licensees.append(licensee_select)
+                self.list_widget.addItem(licensee_select.get_name())
+                
+        
 
     def delete_licensee(self):
         hitItems = self.list_widget.selectedItems()
@@ -83,5 +103,8 @@ class MainWindow(QMainWindow):
             )
 
     
-    def on_item_clicked(self, item) -> None:
-        QMessageBox.information(self, "Selected", item.text())
+    def on_item_double_clicked(self, item) -> None:
+        row = self.list_widget.row(item)
+        licensee_select = self.licensees[row]
+        QMessageBox.information(self, "Selected", 
+                                f"Name: {licensee_select.get_name()} \nID: {licensee_select.get_id()} \nSex Offender: {licensee_select.get_sex_offender()}")
